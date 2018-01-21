@@ -62,7 +62,7 @@ COPY configs/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY configs/uwsgi.ini /code/configs
 COPY configs/uwsgi_params /code/mybook
 
-EXPOSE 8000
+EXPOSE 3031
 
 # * wait for db container is ready to accept connection
 #     https://docs.docker.com/compose/startup-order/

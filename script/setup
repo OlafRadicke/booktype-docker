@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 mkdir -p /srv/docker_volumes/booktype/data
 mkdir -p /srv/docker_volumes/booktype/static
 mkdir -p /srv/docker_volumes/booktype/logs

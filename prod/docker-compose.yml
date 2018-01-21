@@ -34,6 +34,12 @@ services:
 
   nginx:
     build: nginx
+    ports:
+      - "8000:8000"
+    volumes:
+      - /srv/docker_volumes/booktype/data:/code/mybook/data:Z
+      - /srv/docker_volumes/booktype/static:/code/mybook/static:Z
+      - /srv/docker_volumes/booktype/logs/nginx:/var/log/nginx:Z
     networks:
       booktype_net:
         aliases:
@@ -42,15 +48,19 @@ services:
 
   uwsgi:
     build: uwsgi
+    ports:
+      - "3031:3031"
+    volumes:
+      - /srv/docker_volumes/booktype/data:/code/mybook/data:Z
+      - /srv/docker_volumes/booktype/static:/code/mybook/static:Z
+      - /srv/docker_volumes/booktype/logs:/code/mybook/logs:Z
     networks:
       booktype_net:
         aliases:
           - uwsgi
 
-  booktype:
-    build: booktype
-    ports:
-      - "8000:8000"
+  celery:
+    build: celery
     depends_on:
       - redis
       - rabbit
@@ -59,12 +69,6 @@ services:
       - uwsgi
     networks:
       - booktype_net
-    volumes:
-      - /srv/docker_volumes/booktype/data:/code/mybook/data:rw
-      - /srv/docker_volumes/booktype/static:/code/mybook/static:rw
-      - /srv/docker_volumes/booktype/logs:/code/mybook/logs:rw
-      - /srv/docker_volumes/booktype/logs/supervisor:/var/log/supervisor:rw
-      - /srv/docker_volumes/booktype/logs/nginx:/var/log/nginx:rw
 volumes:
   pg_data: {}
   pg_backups: {}

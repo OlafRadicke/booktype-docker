@@ -17,8 +17,6 @@ ENV BOOKTYPE_DATABASE_PASSWORD booktype
 ENV BOOKTYPE_PANDOC_PATH /usr/bin/pandoc
 ENV BOOKTYPE_MPDF_DIR /code/mpdf60
 
-# create dir for supervisor logs
-RUN mkdir -p /var/log/supervisor
 
 # create dir for code
 RUN mkdir -p /code/scripts
@@ -33,10 +31,12 @@ COPY scripts /code/scripts
 WORKDIR /code
 
 # clone project
-RUN git clone -b BK-2423 https://github.com/ride90/Booktype.git /code/Booktype/
+# RUN git clone -b BK-2423 https://github.com/ride90/Booktype.git /code/Booktype/
+COPY ./code/Booktype/ /code/Booktype/
 
 # clone mpdf
-RUN git clone https://github.com/mpdf/mpdf.git /code/mpdf60/
+#RUN git clone https://github.com/mpdf/mpdf.git /code/mpdf60/
+COPY ./code/mpdf60/ /code/mpdf60/
 
 RUN apt-get -y install coreutils
 
@@ -49,7 +49,10 @@ RUN pip install virtualenv \
     && ./Booktype/scripts/createbooktype --database postgresql ${INSTANCENAME}
 
 # make scripts executable
-RUN chmod ug+x scripts/celery.sh scripts/web.sh scripts/manage_py.sh scripts/wait-for-it.sh ${INSTANCENAME}/manage_prod.py
+RUN chmod ug+x \
+    scripts/web.sh \
+    scripts/manage_py.sh \
+    ${INSTANCENAME}/manage_prod.py
 
 RUN chown -R booktype.booktype /code/ \
     && chmod -R 775 /code/${INSTANCENAME}/logs \
@@ -58,25 +61,7 @@ RUN chown -R booktype.booktype /code/ \
 # copy configs
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 COPY configs/nginx_booktype.conf /etc/nginx/sites-enabled/
-COPY configs/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY configs/uwsgi.ini /code/configs
-COPY configs/uwsgi_params /code/mybook
 
 EXPOSE 8000
 
-# * wait for db container is ready to accept connection
-#     https://docs.docker.com/compose/startup-order/
-#     https://github.com/vishnubob/wait-for-it
-#     https://github.com/vishnubob/wait-for-it/issues/15
-# * run manage commands
-#     - migrate
-#     - update_permissions
-#     - update_default_roles
-#     - collectstatic
-#     - compress
-#     - create_superuser
-# * run supervisor
-#     - nginx
-#     - uwsgi
-#     - celery
 CMD ["nginx", "-g", "daemon off;"]

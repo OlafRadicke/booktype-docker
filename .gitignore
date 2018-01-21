@@ -106,3 +106,8 @@ venv.bak/
 
 /prod/web/volumes/
 .idea
+
+# third party
+./prod/nginx/code/mpdf60/
+./prod/nginx/code/Booktype/
+prod/nginx/code/

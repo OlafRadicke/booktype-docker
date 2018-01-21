@@ -23,7 +23,16 @@ About setup scrips: It is inspired by githubs [Scripts To Rule Them All](https:/
 - Docker
 - docker-compose
 - \> 3GB disc storage
+- wget
+- uzip
 
+# Bootstrap project #
+
+To download the (latest version of) Booktype code enter:
+
+```bash
+./script/bootstrap
+```
 
 # Setup #
 
@@ -44,10 +53,38 @@ docker-compose up
 
 It will be build the docker images and start them.
 
+# Parts of this setup #
+
+This setup works some difference docker container together.  
+
+## Nginx ##
+
+This is a webserver and wokks as a load balancer and deliver static contents.
+
+## PostgreSQL ##
+
+This is a SQL database and works as storage and back end.
+
+## Rabbit ##
+
+This is a message queue.
+
+## Redis ##
+
+Redis is an in-memory data structure store, used as a database, cache and
+message broker.
+
+## uWSGI ##
+
+uWSGI application server container.
+
+## Celery ##
+
+Celery is an open source asynchronous task queue or job queue which is based on
+distributed message passing.
 
 # todos #
 
-```
-docker run -v /var/container/some.sock:/var/run/some.sock web
-docker run -v /var/container/some.sock:/var/run/some.sock app
-```
+# Questions #
+
+## Way need this project three queues (Rabbit, Redis and Celery)? ##

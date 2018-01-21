@@ -1,0 +1,17 @@
+#!/bin/bash
+set -x
+set -e
+
+mkdir -p ./prod/nginx/code/
+
+# Download Booktype archive
+wget https://github.com/ride90/Booktype/archive/master.zip
+unzip ./master.zip
+mv  ./Booktype-master ./prod/nginx/code/Booktype/
+rm ./master.zip
+
+# Download mpdf archive
+wget https://github.com/mpdf/mpdf/archive/development.zip
+unzip ./development.zip
+mv  ./mpdf-development ./prod/nginx/code/mpdf60/
+rm ./development.zip
