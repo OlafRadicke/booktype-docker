@@ -2,13 +2,28 @@ version: '3'
 services:
   redis:
     image: redis
+    networks:
+      booktype_net:
+        aliases:
+          - redis
+
   rabbit:
     image: rabbitmq
+    networks:
+      booktype_net:
+        aliases:
+          - rabbit
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
-  db:
+
+  postgres:
     image: postgres
+    networks:
+      booktype_net:
+        aliases:
+          - db
+          - postgres
     volumes:
       - pg_data:/var/lib/postgresql/data
       - pg_backups:/pg_backups
@@ -16,18 +31,34 @@ services:
       - POSTGRES_USER=booktype
       - POSTGRES_PASSWORD=booktype
       - POSTGRES_DB=booktype
-  web:
-    build: web
+
+  nginx:
+    build: nginx
+    networks:
+      booktype_net:
+        aliases:
+          - nginx
+          - httpd
+
+  uwsgi:
+    build: uwsgi
+    networks:
+      booktype_net:
+        aliases:
+          - uwsgi
+
+  booktype:
+    build: booktype
     ports:
       - "8000:8000"
     depends_on:
       - redis
       - rabbit
-      - db
-    links:
-      - redis
-      - rabbit
-      - db
+      - postgres
+      - nginx
+      - uwsgi
+    networks:
+      - booktype_net
     volumes:
       - ./web/volumes/data:/code/mybook/data
       - ./web/volumes/static:/code/mybook/static
@@ -37,3 +68,6 @@ services:
 volumes:
   pg_data: {}
   pg_backups: {}
+
+networks:
+    booktype_net:
