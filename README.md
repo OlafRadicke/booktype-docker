@@ -22,7 +22,7 @@ About setup scrips: It is inspired by githubs [Scripts To Rule Them All](https:/
 
 - Docker
 - docker-compose
-- > 3GB disc storage
+- \> 3GB disc storage
 
 
 # Setup #
