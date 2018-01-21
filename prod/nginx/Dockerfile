@@ -79,5 +79,4 @@ EXPOSE 8000
 #     - nginx
 #     - uwsgi
 #     - celery
-CMD ./scripts/wait-for-it.sh -t 60 db:5432 -- ./scripts/manage_py.sh \
-    && /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+CMD ["nginx", "-g", "daemon off;"]

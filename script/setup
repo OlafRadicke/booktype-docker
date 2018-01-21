@@ -1,0 +1,7 @@
+#!/bin/bash
+
+mkdir -p /srv/docker_volumes/booktype/data
+mkdir -p /srv/docker_volumes/booktype/static
+mkdir -p /srv/docker_volumes/booktype/logs
+mkdir -p /srv/docker_volumes/booktype/logs/supervisor
+mkdir -p /srv/docker_volumes/booktype/logs/nginx

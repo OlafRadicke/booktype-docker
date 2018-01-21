@@ -60,11 +60,11 @@ services:
     networks:
       - booktype_net
     volumes:
-      - ./web/volumes/data:/code/mybook/data
-      - ./web/volumes/static:/code/mybook/static
-      - ./web/volumes/logs:/code/mybook/logs
-      - ./web/volumes/logs/supervisor:/var/log/supervisor
-      - ./web/volumes/logs/nginx:/var/log/nginx
+      - /srv/docker_volumes/booktype/data:/code/mybook/data:rw
+      - /srv/docker_volumes/booktype/static:/code/mybook/static:rw
+      - /srv/docker_volumes/booktype/logs:/code/mybook/logs:rw
+      - /srv/docker_volumes/booktype/logs/supervisor:/var/log/supervisor:rw
+      - /srv/docker_volumes/booktype/logs/nginx:/var/log/nginx:rw
 volumes:
   pg_data: {}
   pg_backups: {}

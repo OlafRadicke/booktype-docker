@@ -16,12 +16,38 @@ container (and back). So if you have more than one setup, you get big trouble
 with automation jobs and orchestration. Believe me, supervisors do not solve
 your problems
 
-# Usage #
+About setup scrips: It is inspired by githubs [Scripts To Rule Them All](https://github.com/github/scripts-to-rule-them-all)
 
-Checkout this code and switch in the directory /prod . Enter:
+# Requirements #
+
+- Docker
+- docker-compose
+- > 3GB disc storage
+
+
+# Setup #
+
+Enter:
+
+```bash
+./script/setup
+```
+for preparing the docker volumes directories.
+
+# Run application #
+
+Switch in the directory /prod . Enter:
 
 ```bash
 docker-compose up
 ```
 
 It will be build the docker images and start them.
+
+
+# todos #
+
+```
+docker run -v /var/container/some.sock:/var/run/some.sock web
+docker run -v /var/container/some.sock:/var/run/some.sock app
+```
