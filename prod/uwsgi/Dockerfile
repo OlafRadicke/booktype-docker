@@ -1,6 +1,5 @@
-# ubuntu image for booktype
-# https://hub.docker.com/r/ride90/ubuntu-booktype/
-FROM ride90/ubuntu-booktype
+# base image ubuntu 14.04 image
+FROM ubuntu:trusty
 
 # set env vars
 ENV INSTANCENAME mybook
@@ -17,26 +16,37 @@ ENV BOOKTYPE_DATABASE_PASSWORD booktype
 ENV BOOKTYPE_PANDOC_PATH /usr/bin/pandoc
 ENV BOOKTYPE_MPDF_DIR /code/mpdf60
 
-# create dir for supervisor logs
-RUN mkdir -p /var/log/supervisor
+# create booktype group, booktype user and assign it to the group
+RUN groupadd booktype \
+ && useradd booktype -g booktype -u 1000
 
-# create dir for code
-RUN mkdir -p /code/scripts
+# install system-wide dependencies
+RUN DEBIAN_FRONTEND=noninteractive apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    python-dev \
+    python-pip \
+    libjpeg-dev \
+    libpq-dev \
+    libxml2-dev \
+    libxslt-dev \
+    tidy \
+    php5-cli \
+    php5-gd \
+    calibre
 
-# create dir for configs
-RUN mkdir -p /code/configs
+ADD ./debs/pandoc-1.19.2.1-1-amd64.deb /home/pandoc-1.19.2.1-1-amd64.deb
+RUN dpkg -i /home/pandoc-1.19.2.1-1-amd64.deb
 
-# copy shell scripts
+RUN pip install uwsgi
+
+RUN mkdir -p /code/scripts \
+    /code/configs
+
 COPY scripts /code/scripts
+COPY ./code/Booktype/ /code/Booktype/
+COPY ./code/mpdf60/ /code/mpdf60/
 
-# set working dir
 WORKDIR /code
-
-# clone project
-RUN git clone -b BK-2423 https://github.com/ride90/Booktype.git /code/Booktype/
-
-# clone mpdf
-RUN git clone https://github.com/mpdf/mpdf.git /code/mpdf60/
 
 RUN apt-get -y install coreutils
 
@@ -49,35 +59,15 @@ RUN pip install virtualenv \
     && ./Booktype/scripts/createbooktype --database postgresql ${INSTANCENAME}
 
 # make scripts executable
-RUN chmod ug+x scripts/celery.sh scripts/web.sh scripts/manage_py.sh scripts/wait-for-it.sh ${INSTANCENAME}/manage_prod.py
+RUN chmod ug+x scripts/web.sh \
+    scripts/manage_py.sh  \
+    ${INSTANCENAME}/manage_prod.py
 
 RUN chown -R booktype.booktype /code/ \
     && chmod -R 775 /code/${INSTANCENAME}/logs \
     && chmod -R 775 /code/${INSTANCENAME}/data
 
-# copy configs
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
-COPY configs/nginx_booktype.conf /etc/nginx/sites-enabled/
-COPY configs/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY configs/uwsgi.ini /code/configs
-COPY configs/uwsgi_params /code/mybook
-
 EXPOSE 3031
-
-# * wait for db container is ready to accept connection
-#     https://docs.docker.com/compose/startup-order/
-#     https://github.com/vishnubob/wait-for-it
-#     https://github.com/vishnubob/wait-for-it/issues/15
-# * run manage commands
-#     - migrate
-#     - update_permissions
-#     - update_default_roles
-#     - collectstatic
-#     - compress
-#     - create_superuser
-# * run supervisor
-#     - nginx
-#     - uwsgi
-#     - celery
-CMD ./scripts/wait-for-it.sh -t 60 db:5432 -- ./scripts/manage_py.sh \
-    && /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+WORKDIR /code/mybook
+USER booktype:booktype
+CMD ["/usr/local/bin/uwsgi", "--http", "0.0.0.0:3031", "--master", "--module", "mybook_site.wsgi_prod", "--processes", "4"]

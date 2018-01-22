@@ -69,6 +69,7 @@ services:
       - uwsgi
     networks:
       - booktype_net
+
 volumes:
   pg_data: {}
   pg_backups: {}

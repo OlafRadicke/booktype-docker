@@ -16,7 +16,7 @@ container (and back). So if you have more than one setup, you get big trouble
 with automation jobs and orchestration. Believe me, supervisors do not solve
 your problems
 
-About setup scrips: It is inspired by githubs [Scripts To Rule Them All](https://github.com/github/scripts-to-rule-them-all)
+About bootstrap and setup scrips: It is inspired by githubs [Scripts To Rule Them All](https://github.com/github/scripts-to-rule-them-all)
 
 # Requirements #
 
@@ -28,7 +28,7 @@ About setup scrips: It is inspired by githubs [Scripts To Rule Them All](https:/
 
 # Bootstrap project #
 
-To download the (latest version of) Booktype code enter:
+To download the (latest version of) third party code enter:
 
 ```bash
 ./script/bootstrap
@@ -42,6 +42,13 @@ Enter:
 ./script/setup
 ```
 for preparing the docker volumes directories.
+
+# (Re)Build images only #
+
+Enter:
+```bash  
+docker-compose build --no-cache
+```
 
 # Run application #
 
@@ -84,6 +91,9 @@ Celery is an open source asynchronous task queue or job queue which is based on
 distributed message passing.
 
 # todos #
+
+- Change basic images from ubuntu to alpin linux (for smaler size)
+
 
 # Questions #
 

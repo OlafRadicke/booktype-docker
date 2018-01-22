@@ -1,6 +1,5 @@
-# ubuntu image for booktype
-# https://hub.docker.com/r/ride90/ubuntu-booktype/
-FROM ride90/ubuntu-booktype
+# base image ubuntu 14.04 image
+FROM ubuntu:trusty
 
 # set env vars
 ENV INSTANCENAME mybook
@@ -18,6 +17,25 @@ ENV BOOKTYPE_PANDOC_PATH /usr/bin/pandoc
 ENV BOOKTYPE_MPDF_DIR /code/mpdf60
 
 
+# create booktype group, booktype user and assign it to the group
+RUN groupadd booktype \
+    && useradd booktype -g booktype -u 1000
+
+# install system-wide dependencies
+RUN DEBIAN_FRONTEND=noninteractive apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    nginx \
+    python-dev \
+    python-pip \
+    libjpeg-dev \
+    libpq-dev \
+    libxml2-dev \
+    libxslt-dev \
+    tidy
+
+ADD ./debs/pandoc-1.19.2.1-1-amd64.deb /home/pandoc-1.19.2.1-1-amd64.deb
+RUN dpkg -i /home/pandoc-1.19.2.1-1-amd64.deb
+
 # create dir for code
 RUN mkdir -p /code/scripts
 
@@ -30,12 +48,7 @@ COPY scripts /code/scripts
 # set working dir
 WORKDIR /code
 
-# clone project
-# RUN git clone -b BK-2423 https://github.com/ride90/Booktype.git /code/Booktype/
 COPY ./code/Booktype/ /code/Booktype/
-
-# clone mpdf
-#RUN git clone https://github.com/mpdf/mpdf.git /code/mpdf60/
 COPY ./code/mpdf60/ /code/mpdf60/
 
 RUN apt-get -y install coreutils
@@ -63,5 +76,5 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 COPY configs/nginx_booktype.conf /etc/nginx/sites-enabled/
 
 EXPOSE 8000
-
+USER booktype:booktype
 CMD ["nginx", "-g", "daemon off;"]

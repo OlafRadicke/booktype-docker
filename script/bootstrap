@@ -2,16 +2,48 @@
 set -x
 set -e
 
+mkdir -p ./prod/uwsgi/code/
+mkdir -p ./prod/uwsgi/debs/
 mkdir -p ./prod/nginx/code/
+mkdir -p ./prod/nginx/debs/
+mkdir -p ./prod/celery/code/
+mkdir -p ./prod/celery/debs/
 
 # Download Booktype archive
-wget https://github.com/ride90/Booktype/archive/master.zip
-unzip ./master.zip
-mv  ./Booktype-master ./prod/nginx/code/Booktype/
+wget -c https://github.com/booktype/Booktype/archive/master.zip
+unzip -uo ./master.zip
+
+rm -rf ./prod/uwsgi/code/Booktype
+cp -r  ./Booktype-master ./prod/uwsgi/code/Booktype
+
+rm -rf ./prod/nginx/code/Booktype
+cp -r ./Booktype-master ./prod/nginx/code/Booktype
+
+rm -rf ./prod/celery/code/Booktype
+cp -r ./Booktype-master ./prod/celery/code/Booktype
+
 rm ./master.zip
 
 # Download mpdf archive
-wget https://github.com/mpdf/mpdf/archive/development.zip
-unzip ./development.zip
-mv  ./mpdf-development ./prod/nginx/code/mpdf60/
+wget -c https://github.com/mpdf/mpdf/archive/development.zip
+unzip -uo ./development.zip
+
+rm -rf ./prod/uwsgi/code/mpdf60/
+cp -r ./mpdf-development ./prod/uwsgi/code/mpdf60
+
+rm -rf ./prod/nginx/code/mpdf60/
+cp -r ./mpdf-development ./prod/nginx/code/mpdf60
+
+rm -rf ./prod/celery/code/mpdf60/
+cp -r ./mpdf-development ./prod/celery/code/mpdf60
+
 rm ./development.zip
+
+# Download pandoc-1.19.2.1-1-amd64.deb
+
+wget -c  https://github.com/jgm/pandoc/releases/download/1.19.2.1/pandoc-1.19.2.1-1-amd64.deb
+rm -f ./prod/uwsgi/debs/pandoc-1.19.2.1-1-amd64.deb \
+    ./prod/nginx/debs/pandoc-1.19.2.1-1-amd64.deb
+cp ./pandoc-1.19.2.1-1-amd64.deb ./prod/uwsgi/debs/pandoc-1.19.2.1-1-amd64.deb
+cp ./pandoc-1.19.2.1-1-amd64.deb ./prod/nginx/debs/pandoc-1.19.2.1-1-amd64.deb
+rm ./pandoc-1.19.2.1-1-amd64.deb
