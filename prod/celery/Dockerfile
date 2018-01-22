@@ -48,9 +48,6 @@ RUN pip install virtualenv \
     && pip install -r Booktype/requirements/prod.txt \
     && ./Booktype/scripts/createbooktype --database postgresql ${INSTANCENAME}
 
-# make scripts executable
-RUN chmod ug+x scripts/celery.sh scripts/web.sh scripts/manage_py.sh scripts/wait-for-it.sh ${INSTANCENAME}/manage_prod.py
-
 RUN chown -R booktype.booktype /code/ \
     && chmod -R 775 /code/${INSTANCENAME}/logs \
     && chmod -R 775 /code/${INSTANCENAME}/data
