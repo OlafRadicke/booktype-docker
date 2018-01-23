@@ -67,7 +67,8 @@ RUN chown -R booktype.booktype /code/ \
     && chmod -R 775 /code/${INSTANCENAME}/logs \
     && chmod -R 775 /code/${INSTANCENAME}/data
 
+
 EXPOSE 3031
 WORKDIR /code/mybook
-USER booktype:booktype
+#USER booktype:booktype
 CMD ["/usr/local/bin/uwsgi", "--http", "0.0.0.0:3031", "--master", "--module", "mybook_site.wsgi_prod", "--processes", "4"]

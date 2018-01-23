@@ -52,9 +52,6 @@ RUN chown -R booktype.booktype /code/ \
     && chmod -R 775 /code/${INSTANCENAME}/logs \
     && chmod -R 775 /code/${INSTANCENAME}/data
 
-
 EXPOSE 8000
-
 USER booktype:booktype
-
 CMD ["/code/venv/bin/python", "/code/mybook/manage_prod.py", "celery", "worker", "--concurrency=10"]

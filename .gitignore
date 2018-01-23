@@ -108,12 +108,10 @@ venv.bak/
 .idea
 
 # third party
-./prod/nginx/code/mpdf60/
-./prod/nginx/code/Booktype/
-prod/nginx/code/
-
-mpdf-development/
 prod/celery/code/
+prod/nginx/code/
 prod/nginx/debs/
 prod/uwsgi/code/
 prod/uwsgi/debs/
+Booktype-master/
+prod/nginx/debs/

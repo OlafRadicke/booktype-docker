@@ -92,9 +92,6 @@ distributed message passing.
 
 # todos #
 
-- Change basic images from ubuntu to alpin linux (for smaler size)
-
+- Change basic images from ubuntu to alpine linux (for smaller size)
 
 # Questions #
-
-## Way need this project three queues (Rabbit, Redis and Celery)? ##

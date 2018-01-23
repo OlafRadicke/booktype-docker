@@ -72,9 +72,9 @@ RUN chown -R booktype.booktype /code/ \
     && chmod -R 775 /code/${INSTANCENAME}/data
 
 # copy configs
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 COPY configs/nginx_booktype.conf /etc/nginx/sites-enabled/
+COPY configs/uwsgi_params /code/mybook
 
 EXPOSE 8000
-USER booktype:booktype
+#USER booktype:booktype
 CMD ["nginx", "-g", "daemon off;"]

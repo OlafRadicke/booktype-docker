@@ -39,7 +39,6 @@ services:
     volumes:
       - /srv/docker_volumes/booktype/data:/code/mybook/data:Z
       - /srv/docker_volumes/booktype/static:/code/mybook/static:Z
-      - /srv/docker_volumes/booktype/logs/nginx:/var/log/nginx:Z
     networks:
       booktype_net:
         aliases:
