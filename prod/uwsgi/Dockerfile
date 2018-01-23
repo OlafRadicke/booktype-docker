@@ -67,7 +67,7 @@ RUN chown -R booktype.booktype /code/ \
     && chmod -R 775 /code/${INSTANCENAME}/logs \
     && chmod -R 775 /code/${INSTANCENAME}/data
 
-
+VOLUME ["/code/${INSTANCENAME}/logs", "/code/${INSTANCENAME}/data"]
 EXPOSE 3031
 WORKDIR /code/mybook
 #USER booktype:booktype

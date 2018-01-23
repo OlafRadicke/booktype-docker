@@ -37,8 +37,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - /srv/docker_volumes/booktype/data:/code/mybook/data:Z
-      - /srv/docker_volumes/booktype/static:/code/mybook/static:Z
+      - /srv/docker_volumes/booktype/data:/code/mybook/data
+      - /srv/docker_volumes/booktype/static:/code/mybook/static
     networks:
       booktype_net:
         aliases:
@@ -50,9 +50,9 @@ services:
     ports:
       - "3031:3031"
     volumes:
-      - /srv/docker_volumes/booktype/data:/code/mybook/data:Z
-      - /srv/docker_volumes/booktype/static:/code/mybook/static:Z
-      - /srv/docker_volumes/booktype/logs:/code/mybook/logs:Z
+      - /srv/docker_volumes/booktype/data:/code/mybook/data
+      - /srv/docker_volumes/booktype/static:/code/mybook/static
+      - /srv/docker_volumes/booktype/logs:/code/mybook/logs
     networks:
       booktype_net:
         aliases:
