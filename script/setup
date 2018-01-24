@@ -3,3 +3,6 @@ set -x
 mkdir -p /srv/docker_volumes/booktype/data
 mkdir -p /srv/docker_volumes/booktype/static
 mkdir -p /srv/docker_volumes/booktype/logs
+mkdir -p /srv/docker_volumes/booktype/nginx/
+cp -u ./prod/nginx/configs/nginx_booktype.conf  /srv/docker_volumes/booktype/nginx/nginx_booktype.conf
+cp -u ./prod/nginx/configs/uwsgi_params  /srv/docker_volumes/booktype/nginx/uwsgi_params

@@ -17,6 +17,13 @@ services:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
 
+  celery:
+    build: celery
+    depends_on:
+      - rabbit
+    networks:
+      - booktype_net
+
   postgres:
     image: postgres
     networks:
@@ -32,19 +39,6 @@ services:
       - POSTGRES_PASSWORD=booktype
       - POSTGRES_DB=booktype
 
-  nginx:
-    build: nginx
-    ports:
-      - "8000:8000"
-    volumes:
-      - /srv/docker_volumes/booktype/data:/code/mybook/data
-      - /srv/docker_volumes/booktype/static:/code/mybook/static
-    networks:
-      booktype_net:
-        aliases:
-          - nginx
-          - httpd
-
   uwsgi:
     build: uwsgi
     ports:
@@ -57,17 +51,49 @@ services:
       booktype_net:
         aliases:
           - uwsgi
-
-  celery:
-    build: celery
     depends_on:
       - redis
       - rabbit
       - postgres
-      - nginx
-      - uwsgi
+      - celery
+
+  nginx:
+    image: "nginx:stable-alpine"
+    ports:
+      - "8080:80"
+    environment:
+       - NGINX_HOST=foobar.com
+       - NGINX_PORT=8080
+    volumes:
+      - /srv/docker_volumes/booktype/nginx/nginx_booktype.conf:/etc/nginx/conf.d/nginx_booktype.conf
+      - /srv/docker_volumes/booktype/nginx/uwsgi_params:/code/mybook/uwsgi_params
+#      - /srv/docker_volumes/booktype/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /srv/docker_volumes/booktype/data:/code/mybook/data
+      - /srv/docker_volumes/booktype/static:/usr/share/nginx/html:ro
     networks:
-      - booktype_net
+      booktype_net:
+        aliases:
+          - nginx
+          - httpd
+    depends_on:
+      - uwsgi
+    command: [nginx-debug, '-g', 'daemon off;']
+
+#  nginx:
+#    build: nginx
+#    ports:
+#      - "8000:8000"
+#    volumes:
+#      - /srv/docker_volumes/booktype/data:/code/mybook/data
+#      - /srv/docker_volumes/booktype/static:/code/mybook/static
+#    networks:
+#      booktype_net:
+#        aliases:
+#          - nginx
+#          - httpd
+
+
+
 
 volumes:
   pg_data: {}

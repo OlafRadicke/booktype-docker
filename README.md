@@ -90,8 +90,18 @@ uWSGI application server container.
 Celery is an open source asynchronous task queue or job queue which is based on
 distributed message passing.
 
+# First login #
+
+For the first login use:
+User: "admin"
+Password: "admin"
+
 # todos #
 
 - Change basic images from ubuntu to alpine linux (for smaller size)
 
 # Questions #
+
+# External documentation #
+
+- [Booktype documentation](https://sourcefabric.booktype.pro/booktype-20-for-authors-and-publishers/)
